@@ -11,14 +11,19 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.URL;
+import java.util.List;
 
 public class FirstTest {
 
     private AppiumDriver driver;
 
     private By buttonSkip = By.id("org.wikipedia:id/fragment_onboarding_skip_button");
+    private By buttonClearSearch = By.id("org.wikipedia:id/search_close_btn");
     private By fieldsSearch = By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//android.widget.TextView");
     private By inputSearch = By.id("org.wikipedia:id/search_src_text");
+    private By panelSearchResult = By.id("org.wikipedia:id/search_results_list");
+    private By itemSearchResult = By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup//*[@resource-id='org.wikipedia:id/page_list_item_title']");
+    private By panelSearchEmptyResult = By.id("org.wikipedia:id/search_empty_container");
 
     @Before
     public void setUp() throws Exception
@@ -55,9 +60,27 @@ public class FirstTest {
                 .click();
     }
 
+    public void waitElementAndSendKeys(By by, String text, String errorMessage, int timeout) {
+        new WebDriverWait(driver, timeout)
+                .withMessage(errorMessage)
+                .until(ExpectedConditions.presenceOfElementLocated(by))
+                .sendKeys(text);
+    }
+
     public void assertElementHasText(By by, String text, String errorMessage) {
         WebElement element = driver.findElement(by);
         Assert.assertTrue(errorMessage, element.getText().contains(text));
+    }
+
+    public void assertCountElements(By by, String errorMessage) {
+        List<WebElement> elements = driver.findElements(by);
+        Assert.assertTrue(errorMessage, elements.size() > 0);
+    }
+
+    public void assertElementPresent(By by, String errorMessage, int timeout) {
+        new WebDriverWait(driver, timeout)
+                .withMessage(errorMessage)
+                .until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
 
@@ -83,5 +106,58 @@ public class FirstTest {
     }
 
 
+    @Test
+    public void searchWordAndCleanResult() {
+        String word = "Java";
+
+        waitElementAndClick(
+                buttonSkip,
+                "Button `Skip` is not found",
+                20
+        );
+
+        waitElementAndClick(
+                fieldsSearch,
+                "Can't click on search panel",
+                20
+        );
+
+        waitElementAndSendKeys(
+                inputSearch,
+                word,
+                "Can't set the search word",
+                20
+        );
+
+        assertElementPresent(
+                panelSearchResult,
+                "Panel of search result is not found",
+                20
+        );
+
+        assertElementPresent(
+                itemSearchResult,
+                "Items of search result are not found",
+                20
+        );
+
+        assertCountElements(
+                itemSearchResult,
+                "Unexpected text"
+        );
+
+        waitElementAndClick(
+                buttonClearSearch,
+                "Button `Clear` is not found",
+                20
+        );
+
+        assertElementPresent(
+                panelSearchEmptyResult,
+                "Panel of empty result is not found",
+                20
+        );
+
+    }
 
 }
