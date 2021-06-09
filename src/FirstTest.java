@@ -83,6 +83,13 @@ public class FirstTest {
                 .until(ExpectedConditions.presenceOfElementLocated(by));
     }
 
+    public void assertElementsHasText(By by, String text, String errorMessage) {
+        List<WebElement> elements = driver.findElements(by);
+        for (WebElement element : elements) {
+            Assert.assertTrue(errorMessage, element.getText().contains(text));
+        }
+    }
+
 
     @Test
     public void checkText() {
@@ -160,4 +167,59 @@ public class FirstTest {
 
     }
 
+
+    @Test
+    public void searchWordAndCheckResult() {
+        String word = "Java";
+
+        waitElementAndClick(
+                buttonSkip,
+                "Button `Skip` not found",
+                20
+        );
+
+        waitElementAndClick(
+                fieldsSearch,
+                "Can't click to search panel",
+                20
+        );
+
+        waitElementAndSendKeys(
+                inputSearch,
+                word,
+                "Can't set the search word",
+                20
+        );
+
+        assertElementPresent(
+                panelSearchResult,
+                "Panel of search result is not found",
+                20
+        );
+
+        assertElementPresent(
+                itemSearchResult,
+                "Items of search result are not found",
+                20
+        );
+
+        assertElementsHasText(
+                itemSearchResult,
+                word,
+                "Unexpected text"
+        );
+
+        waitElementAndClick(
+                buttonClearSearch,
+                "Button `Clear` is not found",
+                20
+        );
+
+        assertElementPresent(
+                panelSearchEmptyResult,
+                "Panel of empty result is not found",
+                20
+        );
+
+    }
 }
