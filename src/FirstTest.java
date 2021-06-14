@@ -6,6 +6,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.By;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -34,6 +35,10 @@ public class FirstTest {
     private By inputListName = By.id("org.wikipedia:id/text_input");
     private By buttonOk = By.xpath("//*[@text='OK']");
     private By buttonViewList = By.xpath("//*[@text='VIEW LIST']");
+    private By nameOfArticleInArticle = By.xpath("//*[@text='VIEW LIST']");
+
+    private ScreenOrientation defaultOrientation = ScreenOrientation.PORTRAIT;
+
 
     @Before
     public void setUp() throws Exception
@@ -49,6 +54,10 @@ public class FirstTest {
         capabilities.setCapability("app", "C:\\Users\\p_alo\\IdeaProjects\\JavaAppiumAutomation\\apks\\org.wikipedia_50359_apps.evozi.com.apk");
 
         driver = new AndroidDriver(new URL("http://127.0.0.1:4723/wd/hub"), capabilities);
+
+        if (driver.getOrientation() != defaultOrientation) {
+            driver.rotate(defaultOrientation);
+        }
     }
 
     @After
@@ -465,4 +474,58 @@ public class FirstTest {
 
     }
 
+    @Test
+    public void testOrientation1() {
+        String word = "Java";
+
+        waitElementAndClick(
+                buttonSkip,
+                "Button `Skip` is not found",
+                20
+        );
+
+
+        waitElementAndClick(
+                fieldsSearch,
+                "Can't click on search panel",
+                20
+        );
+
+        driver.rotate(ScreenOrientation.LANDSCAPE);
+
+        waitElementAndSendKeys(
+                inputSearch,
+                word,
+                "Can't set the search word",
+                20
+        );
+
+    }
+
+
+    @Test
+    public void testOrientation2() {
+        String word = "Java";
+
+        waitElementAndClick(
+                buttonSkip,
+                "Button `Skip` is not found",
+                20
+        );
+
+        waitElementAndClick(
+                fieldsSearch,
+                "Can't click on search panel",
+                20
+        );
+
+        waitElementAndSendKeys(
+                inputSearch,
+                word,
+                "Can't set the search word",
+                20
+        );
+
+        Assert.assertEquals("Orientation is not default", defaultOrientation, driver.getOrientation());
+    }
 }
