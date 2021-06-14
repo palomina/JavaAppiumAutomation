@@ -108,6 +108,13 @@ public class FirstTest {
         }
     }
 
+    public void assertElementPresent(By by, String errorMessage) {
+        List elements = driver.findElements(by);
+        if (elements.size()==0) {
+            throw new AssertionError(errorMessage + " with element: '" + by.toString() + "'");
+        }
+    }
+
     protected void swipeElementToLeft(By by, String errorMessage) {
         WebElement element = waitElementPresent(by, errorMessage, 10);
 
@@ -399,6 +406,63 @@ public class FirstTest {
         );
 
         Assert.assertEquals("The name of the article is not the same is expected!", secondArticleName, titleArticleFromList);
+    }
+
+    @Test
+    public void checkArticleNamePresent() {
+        String word = "Java";
+        String firstArticleName;
+
+
+        waitElementAndClick(
+                buttonSkip,
+                "Button `Skip` not found",
+                20
+        );
+
+        waitElementAndClick(
+                fieldsSearch,
+                "Can't click to the search panel",
+                20
+        );
+
+        waitElementAndSendKeys(
+                inputSearch,
+                word,
+                "Can't set the search word",
+                20
+        );
+
+        waitElementPresent(
+                panelSearchResult,
+                "Panel of search result is not found",
+                20
+        );
+
+        firstArticleName = waitElementAndGetAttribute(
+                itemSearchFirstResult,
+                "text",
+                "The first item of search result is not found",
+                20
+        );
+
+        waitElementAndClick(
+                itemSearchFirstResult,
+                "Can't click to the first article",
+                20
+        );
+
+//        waitElementPresent(
+//                By.xpath("//*[@text='"+firstArticleName+"']"),
+//                "Can't click to the first article",
+//                20
+//        );
+
+        assertElementPresent(
+                By.xpath("//*[@text='"+firstArticleName+"']"),
+                "Can't show the article's title"
+        );
+
     }
 
 }
