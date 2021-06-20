@@ -11,11 +11,13 @@ public class SearchPageObject extends MainPageObject {
     private By inputSearch = By.id("org.wikipedia:id/search_src_text");
     private By panelSearchResult = By.id("org.wikipedia:id/search_results_list");
     private By itemSearchResult = By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup//*[@resource-id='org.wikipedia:id/page_list_item_title']");
+    private By itemSearchResultDesc = By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup//*[@resource-id='org.wikipedia:id/page_list_item_description']");
 
     private By buttonClearSearch = By.id("org.wikipedia:id/search_close_btn");
     private By panelSearchEmptyResult = By.id("org.wikipedia:id/search_empty_container");
 
     private String itemSearchResult_TPL = "//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup[{INDEX}]//*[@resource-id='org.wikipedia:id/page_list_item_title']";
+    private String itemSearchResultByTitleAndDescription_TPL = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id='org.wikipedia:id/page_list_item_title' and contains(@text, '{TITLE}')]/following-sibling::*[@resource-id='org.wikipedia:id/page_list_item_description' and contains(@text, '{DESCRIPTION}')]";
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
@@ -27,6 +29,11 @@ public class SearchPageObject extends MainPageObject {
         return itemSearchResult_TPL.replace("{INDEX}", String.valueOf(index));
     }
 
+    private String getSearchResultItemByTitleAndDescription(String title, String description) {
+        return itemSearchResultByTitleAndDescription_TPL
+                .replace("{TITLE}", title)
+                .replace("{DESCRIPTION}", description);
+    }
     /** TEMPLATES **/
 
     public void initSearchInput() {
@@ -106,6 +113,14 @@ public class SearchPageObject extends MainPageObject {
         this.waitElementAndClick(
                 By.xpath(getSearchResultItem(index)),
                 "Can't click to the article",
+                20
+        );
+    }
+
+    public void waitForElementByTitleAndDescription(String title, String description) {
+        this.waitElementPresent(
+                By.xpath(getSearchResultItemByTitleAndDescription(title, description)),
+                "Can't see the article with title '"+title+"' and description '"+description+"'",
                 20
         );
     }
