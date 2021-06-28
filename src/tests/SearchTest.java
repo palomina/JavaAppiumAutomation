@@ -9,7 +9,7 @@ public class SearchTest extends CoreTestCase {
 
     @Test
     public void testCheckText() {
-        WelcomePageObject welcomePageObject = new WelcomePageObject(driver);
+       WelcomePageObject welcomePageObject = new WelcomePageObject(driver);
         welcomePageObject.skip();
 
         SearchPageObject searchPageObject = new SearchPageObject(driver);
@@ -31,7 +31,7 @@ public class SearchTest extends CoreTestCase {
     }
 
     @Test
-    public void testSearchWordAndCheckResult() {
+    public void testSearchWordAndCheckResult()  throws Exception{
         String word = "Java";
 
         WelcomePageObject welcomePageObject = new WelcomePageObject(driver);

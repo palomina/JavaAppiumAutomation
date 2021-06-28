@@ -5,14 +5,14 @@ import org.openqa.selenium.By;
 
 public class ArticlePageObject extends MainPageObject {
 
-    private By buttonSaveToList = By.id("org.wikipedia:id/article_menu_bookmark");
-    private By buttonAddToList = By.id("org.wikipedia:id/snackbar_action");
-    private By inputListName = By.id("org.wikipedia:id/text_input");
-    private By buttonOk = By.xpath("//*[@text='OK']");
+    private String buttonSaveToList = "id##org.wikipedia:id/article_menu_bookmark";
+    private String buttonAddToList = "id##org.wikipedia:id/snackbar_action";
+    private String inputListName = "id##org.wikipedia:id/text_input";
+    private String buttonOk = "xpath##//*[@text='OK']";
 
 
-    private String itemList_TPL = "//android.view.ViewGroup//android.widget.TextView[@text='{LIST_NAME}']";
-    private String articleTitle_TPL = "//*[@text='{ARTICLE_NAME}']";
+    private String itemList_TPL = "xpath##//android.view.ViewGroup//android.widget.TextView[@text='{LIST_NAME}']";
+    private String articleTitle_TPL = "xpath##//*[@text='{ARTICLE_NAME}']";
 
 
     public ArticlePageObject(AppiumDriver driver) {
@@ -32,26 +32,26 @@ public class ArticlePageObject extends MainPageObject {
 
     public void addToNewList(String listName) {
         this.waitElementAndClick(
-                buttonSaveToList,
+                getLocator(buttonSaveToList),
                 "Can't click to the button `Save to List`",
                 20
         );
 
         this.waitElementAndClick(
-                buttonAddToList,
+                getLocator(buttonAddToList),
                 "Can't click to the button `Add to List`",
                 20
         );
 
         this.waitElementAndSendKeys(
-                inputListName,
+                getLocator(inputListName),
                 listName,
                 "Can't set the list's name",
                 20
         );
 
         this.waitElementAndClick(
-                buttonOk,
+                getLocator(buttonOk),
                 "Can't click to the button `Ok`",
                 20
         );
@@ -62,19 +62,19 @@ public class ArticlePageObject extends MainPageObject {
     public void addToList(String listName) {
 
         this.waitElementAndClick(
-                buttonSaveToList,
+                getLocator(buttonSaveToList),
                 "Can't click to button `Save to List`",
                 20
         );
 
         this.waitElementAndClick(
-                buttonAddToList,
+                getLocator(buttonAddToList),
                 "Can't click to button `Add to List`",
                 20
         );
 
         this.waitElementAndClick(
-                By.xpath(getListItem(listName)),
+                getLocator(getListItem(listName)),
                 "Can't add to list with name `"+listName+"`",
                 20
         );
@@ -82,13 +82,13 @@ public class ArticlePageObject extends MainPageObject {
 
     public void checkArticleTitle(String articleName){
         this.waitElementPresent(
-                By.xpath(getArticleTitle(articleName)),
+                getLocator(getArticleTitle(articleName)),
                 "Can't see to the article title " + getArticleTitle(articleName),
                 20
         );
 
         this.assertElementPresent(
-                By.xpath(getArticleTitle(articleName)),
+                getLocator(getArticleTitle(articleName)),
                 "Can't show the article's title"
         );
     }

@@ -7,17 +7,17 @@ public class SearchPageObject extends MainPageObject {
 
     private static final String TEXT_IN_INPUT = "Search Wikipedia";
 
-    private By fieldsSearch = By.xpath("//*[@resource-id='org.wikipedia:id/search_container']//android.widget.TextView");
-    private By inputSearch = By.id("org.wikipedia:id/search_src_text");
-    private By panelSearchResult = By.id("org.wikipedia:id/search_results_list");
-    private By itemSearchResult = By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup//*[@resource-id='org.wikipedia:id/page_list_item_title']");
-    private By itemSearchResultDesc = By.xpath("//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup//*[@resource-id='org.wikipedia:id/page_list_item_description']");
+    private String fieldsSearch = "xpath##//*[@resource-id='org.wikipedia:id/search_container']//android.widget.TextView";
+    private String inputSearch = "id##org.wikipedia:id/search_src_text";
+    private String panelSearchResult = "id##org.wikipedia:id/search_results_list";
+    private String itemSearchResult = "xpath##//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup//*[@resource-id='org.wikipedia:id/page_list_item_title']";
+    private String itemSearchResultDesc = "xpath##//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup//*[@resource-id='org.wikipedia:id/page_list_item_description']";
 
-    private By buttonClearSearch = By.id("org.wikipedia:id/search_close_btn");
-    private By panelSearchEmptyResult = By.id("org.wikipedia:id/search_empty_container");
+    private String buttonClearSearch = "id##org.wikipedia:id/search_close_btn";
+    private String panelSearchEmptyResult = "id##org.wikipedia:id/search_empty_container";
 
-    private String itemSearchResult_TPL = "//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup[{INDEX}]//*[@resource-id='org.wikipedia:id/page_list_item_title']";
-    private String itemSearchResultByTitleAndDescription_TPL = "//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id='org.wikipedia:id/page_list_item_title' and contains(@text, '{TITLE}')]/following-sibling::*[@resource-id='org.wikipedia:id/page_list_item_description' and contains(@text, '{DESCRIPTION}')]";
+    private String itemSearchResult_TPL = "xpath##//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup[{INDEX}]//*[@resource-id='org.wikipedia:id/page_list_item_title']";
+    private String itemSearchResultByTitleAndDescription_TPL = "xpath##//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id='org.wikipedia:id/page_list_item_title' and contains(@text, '{TITLE}')]/following-sibling::*[@resource-id='org.wikipedia:id/page_list_item_description' and contains(@text, '{DESCRIPTION}')]";
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
@@ -37,14 +37,26 @@ public class SearchPageObject extends MainPageObject {
     /** TEMPLATES **/
 
     public void initSearchInput() {
-        this.waitElementAndClick(
-                fieldsSearch,
+        this.waitElementPresent(
+                getLocator(fieldsSearch),
                 "Can't click on search panel",
-                20
+                30
+        );
+
+        this.waitElementAndClick(
+                getLocator(fieldsSearch),
+                "Can't click on search panel",
+                30
+        );
+
+        this.waitElementPresent(
+                getLocator(inputSearch),
+                "SearchInput is not presented",
+                30
         );
 
         this.assertElementHasText(
-                inputSearch,
+                getLocator(inputSearch),
                 TEXT_IN_INPUT,
                 "Unexpected text"
         );
@@ -52,7 +64,7 @@ public class SearchPageObject extends MainPageObject {
 
     public void searchByInputText(String word) {
         this.waitElementAndSendKeys(
-                inputSearch,
+                getLocator(inputSearch),
                 word,
                 "Can't set the search word",
                 20
@@ -61,32 +73,32 @@ public class SearchPageObject extends MainPageObject {
 
     public void checkIsResultsPresents() {
         this.waitElementPresent(
-                panelSearchResult,
+                getLocator(panelSearchResult),
                 "Panel of search result is not found",
                 20
         );
 
         this.waitElementPresent(
-                itemSearchResult,
+                getLocator(itemSearchResult),
                 "Items of search result are not found",
                 20
         );
 
         this.assertCountElements(
-                itemSearchResult,
+                getLocator(itemSearchResult),
                 "Unexpected text"
         );
     }
 
     public void clearResults() {
         this.waitElementAndClick(
-                buttonClearSearch,
+                getLocator(buttonClearSearch),
                 "Button `Clear` is not found",
                 20
         );
 
         this.waitElementPresent(
-                panelSearchEmptyResult,
+                getLocator(panelSearchEmptyResult),
                 "Panel of empty result is not found",
                 20
         );
@@ -94,15 +106,20 @@ public class SearchPageObject extends MainPageObject {
 
     public void checkTextResults(String word) {
         this.assertElementsHasText(
-                itemSearchResult,
+                getLocator(itemSearchResult),
                 word,
                 "Unexpected text"
         );
     }
 
     public String getArticleNameByIndex(int index) {
+        this.waitElementPresent(
+                getLocator(getSearchResultItem(index)),
+                "The first item of search result is not found",
+                20
+        );
         return this.waitElementAndGetAttribute(
-                By.xpath(getSearchResultItem(index)),
+                getLocator(getSearchResultItem(index)),
                 "text",
                 "The first item of search result is not found",
                 20
@@ -111,7 +128,7 @@ public class SearchPageObject extends MainPageObject {
 
     public void chooseArticleByIndex(int index) {
         this.waitElementAndClick(
-                By.xpath(getSearchResultItem(index)),
+                getLocator(getSearchResultItem(index)),
                 "Can't click to the article",
                 20
         );
@@ -119,7 +136,7 @@ public class SearchPageObject extends MainPageObject {
 
     public void waitForElementByTitleAndDescription(String title, String description) {
         this.waitElementPresent(
-                By.xpath(getSearchResultItemByTitleAndDescription(title, description)),
+                getLocator(getSearchResultItemByTitleAndDescription(title, description)),
                 "Can't see the article with title '"+title+"' and description '"+description+"'",
                 20
         );

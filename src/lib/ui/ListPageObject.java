@@ -5,9 +5,9 @@ import org.openqa.selenium.By;
 
 public class ListPageObject extends MainPageObject {
 
-    private By buttonViewList = By.xpath("//*[@text='VIEW LIST']");
+    private String buttonViewList = "xpath##//*[@text='VIEW LIST']";
 
-    private final String itemArticle_TPL = "//*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{ARTICLE_NAME}']";
+    private final String itemArticle_TPL = "xpath##//*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{ARTICLE_NAME}']";
 
     public ListPageObject(AppiumDriver driver) {
         super(driver);
@@ -22,7 +22,7 @@ public class ListPageObject extends MainPageObject {
 
     public void viewList() {
         this.waitElementAndClick(
-                buttonViewList,
+                getLocator(buttonViewList),
                 "Can't click to button `View List`",
                 20
         );
@@ -30,20 +30,20 @@ public class ListPageObject extends MainPageObject {
 
     public void removeFromList(String articleName) {
         this.waitElementPresent(
-                By.xpath(getArticleItem(articleName)),
+                getLocator(getArticleItem(articleName)),
                 "First article is not found in list",
                 10
         );
 
         this.swipeElementToLeft(
-                By.xpath(getArticleItem(articleName)),
+                getLocator(getArticleItem(articleName)),
                 "Can't swipe"
         );
     }
 
     public void checkArticleInList(String articleName) {
         this.waitElementPresent(
-                By.xpath(getArticleItem(articleName)),
+                getLocator(getArticleItem(articleName)),
                 "Article `"+articleName+"` is not found in the list",
                 10
         );
@@ -51,7 +51,7 @@ public class ListPageObject extends MainPageObject {
 
     public String getArticleNameInList(String articleName){
         return this.waitElementAndGetAttribute(
-                By.xpath(getArticleItem(articleName)),
+                getLocator(getArticleItem(articleName)),
                 "text",
                 "The title of second article in the list is not present",
                 10

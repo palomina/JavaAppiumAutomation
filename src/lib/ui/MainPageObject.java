@@ -2,12 +2,15 @@ package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
+import io.appium.java_client.touch.WaitOptions;
+import io.appium.java_client.touch.offset.PointOption;
 import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
 import java.util.List;
 
 public class MainPageObject {
@@ -81,10 +84,22 @@ public class MainPageObject {
 
         TouchAction action = new TouchAction(driver);
         action
-                .press(rightX, middleY)
+                .press((WebElement) PointOption.point(rightX, middleY))
                 .waitAction(300)
-                .moveTo(leftX, middleY)
+                .moveTo((WebElement) PointOption.point(leftX, middleY))
                 .release()
                 .perform();
+    }
+
+    public By getLocator(String locator) {
+        String[] parts = locator.split("##");
+        switch (parts[0]) {
+            case "id":
+                return By.id(parts[1]);
+            case "xpath":
+                return By.xpath(parts[1]);
+            default:
+                throw new IllegalArgumentException("Unknown type of locator: " + parts[0]);
+        }
     }
 }

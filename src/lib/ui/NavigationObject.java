@@ -5,7 +5,7 @@ import org.openqa.selenium.By;
 
 public class NavigationObject extends MainPageObject {
 
-    private By buttonBack = By.xpath("//android.widget.ImageButton[@content-desc='Navigate up']");
+    private String buttonBack = "xpath##//android.widget.ImageButton[@content-desc='Navigate up']";
 
     public NavigationObject(AppiumDriver driver) {
         super(driver);
@@ -13,7 +13,7 @@ public class NavigationObject extends MainPageObject {
 
     public void back() {
         this.waitElementAndClick(
-                buttonBack,
+                getLocator(buttonBack),
                 "Can't click to the button `Back`",
                 20
         );
