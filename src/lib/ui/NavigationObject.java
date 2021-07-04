@@ -3,9 +3,9 @@ package lib.ui;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 
-public class NavigationObject extends MainPageObject {
+public abstract class NavigationObject extends MainPageObject {
 
-    private String buttonBack = "xpath##//android.widget.ImageButton[@content-desc='Navigate up']";
+    protected static String buttonBack;
 
     public NavigationObject(AppiumDriver driver) {
         super(driver);

@@ -1,23 +1,23 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
+import lib.Platform;
 
-public class SearchPageObject extends MainPageObject {
+public abstract class SearchPageObject extends MainPageObject {
 
-    private static final String TEXT_IN_INPUT = "Search Wikipedia";
+    protected static final String TEXT_IN_INPUT = "Search Wikipedia";
 
-    private String fieldsSearch = "xpath##//*[@resource-id='org.wikipedia:id/search_container']//android.widget.TextView";
-    private String inputSearch = "id##org.wikipedia:id/search_src_text";
-    private String panelSearchResult = "id##org.wikipedia:id/search_results_list";
-    private String itemSearchResult = "xpath##//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup//*[@resource-id='org.wikipedia:id/page_list_item_title']";
-    private String itemSearchResultDesc = "xpath##//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup//*[@resource-id='org.wikipedia:id/page_list_item_description']";
-
-    private String buttonClearSearch = "id##org.wikipedia:id/search_close_btn";
-    private String panelSearchEmptyResult = "id##org.wikipedia:id/search_empty_container";
-
-    private String itemSearchResult_TPL = "xpath##//*[@resource-id='org.wikipedia:id/search_results_list']//android.view.ViewGroup[{INDEX}]//*[@resource-id='org.wikipedia:id/page_list_item_title']";
-    private String itemSearchResultByTitleAndDescription_TPL = "xpath##//*[@resource-id='org.wikipedia:id/search_results_list']//*[@resource-id='org.wikipedia:id/page_list_item_title' and contains(@text, '{TITLE}')]/following-sibling::*[@resource-id='org.wikipedia:id/page_list_item_description' and contains(@text, '{DESCRIPTION}')]";
+    protected static String
+        fieldsSearch,
+        inputSearch,
+        panelSearchResult,
+        itemSearchResult,
+        itemSearchResultDesc,
+        panelSearchEmptyResult,
+        buttonClearSearch,
+        buttonCancelSearch,
+        itemSearchResult_TPL,
+        itemSearchResultByTitleAndDescription_TPL;
 
     public SearchPageObject(AppiumDriver driver) {
         super(driver);
@@ -25,11 +25,11 @@ public class SearchPageObject extends MainPageObject {
 
 
     /** TEMPLATES **/
-    private String getSearchResultItem(int index) {
+    protected String getSearchResultItem(int index) {
         return itemSearchResult_TPL.replace("{INDEX}", String.valueOf(index));
     }
 
-    private String getSearchResultItemByTitleAndDescription(String title, String description) {
+    protected String getSearchResultItemByTitleAndDescription(String title, String description) {
         return itemSearchResultByTitleAndDescription_TPL
                 .replace("{TITLE}", title)
                 .replace("{DESCRIPTION}", description);
@@ -103,6 +103,13 @@ public class SearchPageObject extends MainPageObject {
                 20
         );
     }
+    public void cancelSearch() {
+        this.waitElementAndClick(
+                getLocator(buttonCancelSearch),
+                "Button `Clear` is not found",
+                20
+        );
+    }
 
     public void checkTextResults(String word) {
         this.assertElementsHasText(
@@ -118,9 +125,9 @@ public class SearchPageObject extends MainPageObject {
                 "The first item of search result is not found",
                 20
         );
-        return this.waitElementAndGetAttribute(
+
+        return this.waitElementAndGetText(
                 getLocator(getSearchResultItem(index)),
-                "text",
                 "The first item of search result is not found",
                 20
         );

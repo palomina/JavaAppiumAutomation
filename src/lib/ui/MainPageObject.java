@@ -13,7 +13,7 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 import java.time.Duration;
 import java.util.List;
 
-public class MainPageObject {
+abstract class MainPageObject {
 
     protected AppiumDriver driver;
 
@@ -46,6 +46,13 @@ public class MainPageObject {
                 .withMessage(errorMessage)
                 .until(ExpectedConditions.presenceOfElementLocated(by))
                 .getAttribute(attributeName);
+    }
+
+    public String waitElementAndGetText(By by, String errorMessage, int timeout) {
+        return new WebDriverWait(driver, timeout)
+                .withMessage(errorMessage)
+                .until(ExpectedConditions.presenceOfElementLocated(by))
+                .getText();
     }
 
     public void assertElementHasText(By by, String text, String errorMessage) {
@@ -84,9 +91,9 @@ public class MainPageObject {
 
         TouchAction action = new TouchAction(driver);
         action
-                .press((WebElement) PointOption.point(rightX, middleY))
+                .press(rightX, middleY)
                 .waitAction(300)
-                .moveTo((WebElement) PointOption.point(leftX, middleY))
+                .moveTo(leftX, middleY)
                 .release()
                 .perform();
     }

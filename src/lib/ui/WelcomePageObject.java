@@ -1,17 +1,17 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
-import org.openqa.selenium.By;
 
-public class WelcomePageObject extends MainPageObject {
+public abstract class WelcomePageObject extends MainPageObject {
 
-    private String buttonSkip = "id##org.wikipedia:id/fragment_onboarding_skip_button";
-    private String buttonNext = "xpath##//XCUIElementTypeButton[@name='Next']";
-    private String linkLearnMore = "xpath##//XCUIElementTypeStaticText[@name='Learn more about Wikipedia']";
-    private String linkAddOrEditPreferredLanguages = "xpath##//XCUIElementTypeStaticText[@name='Add or edit preferred languages']";
-    private String linkLearnMoreAboutDataCollected = "xpath##//XCUIElementTypeButton[@name='Learn more about data collected']";
-    private String buttonGetStarted = "xpath##//XCUIElementTypeButton[@name='Get started']";
-    private String textNewWaysToExplore = "id##New ways to explore";
+    protected static String
+        buttonSkip,
+        buttonNext,
+        linkLearnMore,
+        linkAddOrEditPreferredLanguages,
+        linkLearnMoreAboutDataCollected,
+        buttonGetStarted,
+        textNewWaysToExplore;
 
     public WelcomePageObject(AppiumDriver driver)
     {

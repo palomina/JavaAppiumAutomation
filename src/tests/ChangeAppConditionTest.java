@@ -2,6 +2,8 @@ package tests;
 
 import lib.CoreTestCase;
 import lib.ui.*;
+import lib.ui.factories.SearchPageObjectFactory;
+import lib.ui.factories.WelcomePageObjectFactory;
 import org.junit.Test;
 import org.openqa.selenium.ScreenOrientation;
 
@@ -11,11 +13,11 @@ public class ChangeAppConditionTest extends CoreTestCase {
     public void testOrientation1() {
         String word = "Java";
 
-        WelcomePageObject welcomePageObject = new WelcomePageObject(driver);
+        WelcomePageObject welcomePageObject = WelcomePageObjectFactory.get(driver);
         welcomePageObject.skip();
 
 
-        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
 
         this.rotateToLANDSCAPE();
@@ -27,10 +29,10 @@ public class ChangeAppConditionTest extends CoreTestCase {
     public void testOrientation2() {
         String word = "Java";
 
-        WelcomePageObject welcomePageObject = new WelcomePageObject(driver);
+        WelcomePageObject welcomePageObject = WelcomePageObjectFactory.get(driver);
         welcomePageObject.skip();
 
-        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
         searchPageObject.searchByInputText(word);
 

@@ -1,7 +1,9 @@
 package tests;
 
 import lib.CoreTestCase;
+import lib.Platform;
 import lib.ui.*;
+import lib.ui.factories.*;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -16,10 +18,10 @@ public class LIstTest extends CoreTestCase {
         String titleArticleFromList;
 
 
-        WelcomePageObject welcomePageObject = new WelcomePageObject(driver);
+        WelcomePageObject welcomePageObject = WelcomePageObjectFactory.get(driver);
         welcomePageObject.skip();
 
-        SearchPageObject searchPageObject = new SearchPageObject(driver);
+        SearchPageObject searchPageObject = SearchPageObjectFactory.get(driver);
         searchPageObject.initSearchInput();
         searchPageObject.searchByInputText(word);
 
@@ -28,25 +30,37 @@ public class LIstTest extends CoreTestCase {
         firstArticleName = searchPageObject.getArticleNameByIndex(1);
         searchPageObject.chooseArticleByIndex(1);
 
-        ArticlePageObject articlePageObject = new ArticlePageObject(driver);
+        ArticlePageObject articlePageObject = ArticlePageObjectFactory.get(driver);
         articlePageObject.addToNewList(listName);
 
-        NavigationObject navigationObject = new NavigationObject(driver);
+        NavigationObject navigationObject = NavigationObjectFactory.get(driver);
         navigationObject.back();
 
         secondArticleName = searchPageObject.getArticleNameByIndex(2);
         searchPageObject.chooseArticleByIndex(2);
         articlePageObject.addToList(listName);
 
-        ListPageObject listPageObject = new ListPageObject(driver);
+        ListPageObject listPageObject = ListPageObjectFactory.get(driver);
+
+        if (Platform.getInstance().isIOS()) {
+            navigationObject.back();
+            searchPageObject.cancelSearch();
+        }
+
         listPageObject.viewList();
 
         listPageObject.removeFromList(firstArticleName);
 
-        listPageObject.checkArticleInList(secondArticleName);
+        if (Platform.getInstance().isAndroid()) {
+            listPageObject.checkArticleInList(secondArticleName);
 
-        titleArticleFromList = listPageObject.getArticleNameInList(secondArticleName);
+            titleArticleFromList = listPageObject.getArticleNameInList(secondArticleName);
 
-        Assert.assertEquals("The name of the article is not the same is expected!", secondArticleName, titleArticleFromList);
+            Assert.assertEquals("The name of the article is not the same is expected!", secondArticleName, titleArticleFromList);
+        } else {
+            listPageObject.clickOnArticleInList(secondArticleName);
+
+            articlePageObject.removeFromList();
+        }
     }
 }

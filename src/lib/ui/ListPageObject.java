@@ -1,20 +1,24 @@
 package lib.ui;
 
 import io.appium.java_client.AppiumDriver;
+import lib.Platform;
+import lib.ui.factories.ArticlePageObjectFactory;
 import org.openqa.selenium.By;
 
-public class ListPageObject extends MainPageObject {
+public abstract class ListPageObject extends MainPageObject {
 
-    private String buttonViewList = "xpath##//*[@text='VIEW LIST']";
-
-    private final String itemArticle_TPL = "xpath##//*[@resource-id='org.wikipedia:id/page_list_item_title' and @text='{ARTICLE_NAME}']";
+    protected static String
+            buttonViewList,
+            buttonClosePopup,
+            buttonDeleteArticle,
+            itemArticle_TPL;
 
     public ListPageObject(AppiumDriver driver) {
         super(driver);
     }
 
     /** TEMPLATES **/
-    private String getArticleItem(String name) {
+    protected String getArticleItem(String name) {
         return itemArticle_TPL.replace("{ARTICLE_NAME}", String.valueOf(name));
     }
 
@@ -26,6 +30,10 @@ public class ListPageObject extends MainPageObject {
                 "Can't click to button `View List`",
                 20
         );
+
+        if (Platform.getInstance().isIOS()) {
+            this.closePopup();
+        }
     }
 
     public void removeFromList(String articleName) {
@@ -39,22 +47,45 @@ public class ListPageObject extends MainPageObject {
                 getLocator(getArticleItem(articleName)),
                 "Can't swipe"
         );
+
+        if (Platform.getInstance().isIOS()) {
+            this.waitElementAndClick(
+                    getLocator(buttonDeleteArticle),
+                    "Button of remove article from saved is not found",
+                    10
+            );
+        }
     }
 
     public void checkArticleInList(String articleName) {
         this.waitElementPresent(
                 getLocator(getArticleItem(articleName)),
-                "Article `"+articleName+"` is not found in the list",
+                "Article `" + articleName + "` is not found in the list",
+                10
+        );
+    }
+
+    public void clickOnArticleInList(String articleName) {
+        this.waitElementAndClick(
+                getLocator(getArticleItem(articleName)),
+                "Article `" + articleName + "` is not found in the list",
                 10
         );
     }
 
     public String getArticleNameInList(String articleName){
-        return this.waitElementAndGetAttribute(
+        return this.waitElementAndGetText(
                 getLocator(getArticleItem(articleName)),
-                "text",
                 "The title of second article in the list is not present",
                 10
+        );
+    }
+
+    public void closePopup() {
+        this.waitElementAndClick(
+                getLocator(buttonClosePopup),
+                "Can't click to button `View List`",
+                20
         );
     }
 }

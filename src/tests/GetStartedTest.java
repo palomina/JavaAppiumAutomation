@@ -1,14 +1,15 @@
-package tests.iOS;
+package tests;
 
 import lib.CoreTestCase;
-import lib.iOSTestCase;
 import lib.ui.WelcomePageObject;
+import lib.ui.factories.WelcomePageObjectFactory;
 import org.junit.Test;
 
 public class GetStartedTest extends CoreTestCase {
+
     @Test
     public void testPassThroughWelcome(){
-        WelcomePageObject welcomePageObject = new WelcomePageObject(driver);
+        WelcomePageObject welcomePageObject = WelcomePageObjectFactory.get(driver);
         welcomePageObject.waitForLearnMoreLink();
         welcomePageObject.nextClick();
 
